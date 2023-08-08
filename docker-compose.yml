@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  postgres_auth_data:
+  postgres_user_data:
+
+
+services:
+  auth_db:
+    container_name: auth_db
+    image: postgres:15.3
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=auth
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  user_db:
+    container_name: user_db
+    image: postgres:15.3
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=user
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  # For consul i personally opted to just run it locally
+  # consul with docker hasn't been working properly for me
+  service_discovery:
+    container_name: service_discovery
+    image: consul:1.15.4
+    ports:
+      - "8500:8500"
+    logging:
+      driver: none
